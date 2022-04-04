@@ -5,13 +5,40 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daily randomizer</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+
 </head>
 <body>
-    <table id ="tabla">
-
+    <table id="tabla">
+        <tbody>
+            <tr v-for="value in rowsCreated">
+                <td><input type="checkbox" :name="value.name" :id="value.name"></td>
+                <td>{{ value.emoji }}</td>
+                <td>{{value.name}}</td>
+            </tr>
+        </tbody>
     </table>
     <script>
-        var table=document.getElementById("tabla");
+        new Vue({
+            el:'#tabla',
+            data:{
+                rowsCreated: [],
+            },
+            created: function(){
+                fetch('https://naghost-dev.github.io/people.json')
+                .then(response => response.json())
+                .then(data => {
+                    let names=shuffle(data);
+                    let arrayAux=[];
+                    names.forEach(element => {
+                        arrayAux.push({name:element, emoji:getEmoji()})
+                    });
+                    this.rowsCreated=arrayAux;
+            });
+            }
+        });
+        
+        //Necesary not, but.. its fun! :D
         var emojis = ['😄','😃','😀','😊','😉','😍','😘','😚','😗','😙','😜','😝','😛',
         '😳','😁','😔','😌','😒','😞','😣','😢','😂','😭','😪','😥','😰','😅','😓','😩',
         '😫','😨','😱','😠','😡','😤','😖','😆','😋','😷','😎','😴','😵','😲','😟','😦',
@@ -33,35 +60,13 @@
         '🌙','🌍','🌎','🌏','🌋','🌌','🌠','⭐','☀','⛅','☁','⚡','☔','❄','⛄','🌀','🌁',
         '🌈','🌊','🎍','💝','🎎','🎒','🎓','🎏','🎆','🎇','🎐','🎑','🎃','👻','🎅','🎄',
         '🎁','🎋','🎉','🎊','🎈','🎌','🔮','🎥','📷','📹','📼','💿','📀','💽','💾','💻'
-];
-        var arr = ["roberto", "santiago","jon","alberto","adri","estela", "roselle", "jorge","harold", "javi", "juanvi", "mila", "pedro", "susana", "zulenny","miguel", "ricardo"];
-        arr = shuffle(arr);
-        for (const nom in arr) {
+        ];
 
-            let tr=document.createElement('tr');
-            let inputColmun= document.createElement('td');
-            let input= document.createElement('input');
-            let nameColmun= document.createElement('td');
-            let emojiColmun= document.createElement('td');
 
-            input.value=arr[nom];
-            input.name=arr[nom];
-            input.type='checkbox';
-
-            nameColmun.textContent=arr[nom];
-            emojiColmun.textContent=emojis[Math.floor(Math.random() * emojis.length)];
-
-            inputColmun.appendChild(input)
-            
-            tr.appendChild(inputColmun)
-            tr.appendChild(emojiColmun)
-            tr.appendChild(nameColmun)
-            
-
-            table.appendChild(tr);
-
-            //document.write("<input name='"+arr[nom]+"' type='checkbox'>"+arr[nom]+emojis[Math.floor(Math.random() * emojis.length)]+" <br>");
+        function getEmoji(){
+            return emojis[Math.floor(Math.random() * emojis.length)]
         }
+       
         function shuffle(a) {
             for (let i = a.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
