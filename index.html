@@ -6,24 +6,116 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cocaleros - Daily randomizer</title>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+
     <link rel="icon" type="image/x-icon" href="https://download.seaicons.com/download/i48612/dapino/summer-holiday/dapino-summer-holiday-palm-tree.ico">
 
 </head>
 <body>
-    <table id="tabla">
-        <tbody>
-            <tr v-for="value in rowsCreated">
-                <td><input type="checkbox" :name="value.name" :id="value.name"></td>
-                <td>{{ value.emoji }}</td>
-                <td>{{value.name}}</td>
-            </tr>
-        </tbody>
-    </table>
+    <v-container fluid id="tabla" class="grey lighten-5">
+        <table>
+            
+              <tbody>
+                <tr
+                v-for="value in rowsCreated"
+                >
+
+                    <td><input type="checkbox" :name="value.name" :id="value.name"></td>
+                    <td v-on:click="newEmoji(value)"> {{value.emoji}} </td>
+                    <td  v-on:click="showMenu(value)" > {{value.name}} </td>
+                    <td :id="'menu-'+ value.name" hidden>
+                        <span  v-on:click="first(value)">
+                            <span class="mdi mdi-chevron-double-up"></span>
+                        </span>
+                        <span  v-on:click="upTop(value)" >   
+                            <span class="mdi mdi-chevron-up"></span>
+                        </span>
+                        <span v-on:click="downBot(value)">
+                            <span class="mdi mdi-chevron-down"></span>
+                        </span>
+                        <span v-on:click="last(value)">
+                            <span class="mdi mdi-chevron-double-down"></span>
+                        </span>
+                        <span  v-on:dblclick="deletef(value)">
+                            <span class="mdi mdi-knife"></span>
+                        </span>
+                    </td>
+                </tr>
+              </tbody>
+            
+        </table>
+    
+</v-container>
+<link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+
     <script>
         new Vue({
             el:'#tabla',
             data:{
                 rowsCreated: [],
+            },
+            methods: {
+                showMenu: function (event) {
+                    document.getElementById("menu-"+event.name).hidden=!document.getElementById("menu-"+event.name).hidden;
+                },
+                sleeped: function (event) {
+                    event.sleep++;
+                },
+                newEmoji: function (event) {
+                    event.emoji=getEmoji();
+                },
+                deletef: function (event) {
+                    this.showMenu(event);
+                    this.rowsCreated=this.rowsCreated.filter( element => event.name != element.name)
+                },
+                upTop: function (event) {
+                    this.showMenu(event);
+                    const fromIndex = this.rowsCreated.indexOf(event); // 👉️ 0
+                    const toIndex = this.rowsCreated.indexOf(event)-1;
+
+                    const element = this.rowsCreated.splice(fromIndex, 1)[0];
+       
+
+                    this.rowsCreated.splice(toIndex, 0, element);
+                },
+                first: function (event) {
+                    this.showMenu(event);
+                    const fromIndex = this.rowsCreated.indexOf(event); // 👉️ 0
+                    const toIndex = 0;
+
+                    const element = this.rowsCreated.splice(fromIndex, 1)[0];
+       
+
+                    this.rowsCreated.splice(toIndex, 0, element);
+                },
+                downBot: function (event) {
+                    this.showMenu(event);
+                    const fromIndex = this.rowsCreated.indexOf(event); // 👉️ 0
+                    const toIndex = this.rowsCreated.indexOf(event)+1;
+
+                    const element = this.rowsCreated.splice(fromIndex, 1)[0];
+       
+
+                    this.rowsCreated.splice(toIndex, 0, element);
+                },
+                last: function (event) {
+                    this.showMenu(event);
+                    const fromIndex = this.rowsCreated.indexOf(event); // 👉️ 0
+                    const toIndex = this.rowsCreated.length-1;
+
+                    const element = this.rowsCreated.splice(fromIndex, 1)[0];
+       
+
+                    this.rowsCreated.splice(toIndex, 0, element);
+                }
             },
             created: function(){
                 fetch('https://naghost-dev.github.io/people.json')
@@ -32,7 +124,7 @@
                     let names=shuffle(data);
                     let arrayAux=[];
                     names.forEach(element => {
-                        arrayAux.push({name:element, emoji:getEmoji()})
+                        arrayAux.push({name:element, emoji:getEmoji(), sleep:0})
                     });
                     this.rowsCreated=arrayAux;
             });
