@@ -23,7 +23,7 @@
                 v-for="value in rowsCreated"
                 >
 
-                    <td><input type="checkbox" :checked="value.active" :name="value.name" :id="value.name"></td>
+                    <td><input type="checkbox" v-on:change="changeActive(value)" :checked="value.active" :name="value.name" :id="value.name"></td>
                     <td v-on:click="newEmoji(value)"> {{value.emoji}} </td>
                     <td  v-on:click="showMenu(value)" > {{value.name}} </td>
                     <td :id="'menu-'+ value.name" hidden>
@@ -63,6 +63,9 @@
                 rowsCreated: [],
             },
             methods: {
+                changeActive: function(event){
+                    event.active=!event.active
+                },
                 showMenu: function (event) {
                     document.getElementById("menu-"+event.name).hidden=!document.getElementById("menu-"+event.name).hidden;
                 },
