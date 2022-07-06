@@ -23,7 +23,7 @@
                 v-for="value in rowsCreated"
                 >
 
-                    <td><input type="checkbox" :name="value.name" :id="value.name"></td>
+                    <td><input type="checkbox" :checked="value.active" :name="value.name" :id="value.name"></td>
                     <td v-on:click="newEmoji(value)"> {{value.emoji}} </td>
                     <td  v-on:click="showMenu(value)" > {{value.name}} </td>
                     <td :id="'menu-'+ value.name" hidden>
@@ -124,7 +124,7 @@
                     let names=shuffle(data);
                     let arrayAux=[];
                     names.forEach(element => {
-                        arrayAux.push({name:element, emoji:getEmoji(), sleep:0})
+                        arrayAux.push({name:element, emoji:getEmoji(), sleep:0, active:false})
                     });
                     this.rowsCreated=arrayAux;
             });
