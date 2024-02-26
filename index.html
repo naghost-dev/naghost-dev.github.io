@@ -90,8 +90,16 @@
                 ]
             },
             methods: {
+                getCommunistEmoji: function(event) {
+                    if (event.active) {
+                        return '☭';
+                    } else {
+                        return event.emoji=this.getEmoji();
+                    }
+                },
                 changeActive: function(event){
                     event.active=!event.active
+                    event.emoji=this.getCommunistEmoji(event);
                 },
                 showMenu: function (event) {
                     document.getElementById("menu-"+event.name).hidden=!document.getElementById("menu-"+event.name).hidden;
