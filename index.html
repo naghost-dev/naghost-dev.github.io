@@ -113,9 +113,9 @@
                     let today = new Date();
                     let day = today.getDay();
                     if(day==5){
-                        return fetch('http://api.giphy.com/v1/gifs/search?q=Its+friday&api_key=Pu520AataQOyWkSY21Au4EfCVIX8OSwm');
+                        return fetch('https://api.giphy.com/v1/gifs/search?q=Its+friday&api_key=Pu520AataQOyWkSY21Au4EfCVIX8OSwm');
                     }else {
-                        return fetch('http://api.giphy.com/v1/gifs/search?q=good+morning&api_key=Pu520AataQOyWkSY21Au4EfCVIX8OSwm');
+                        return fetch('https://api.giphy.com/v1/gifs/search?q=good+morning&api_key=Pu520AataQOyWkSY21Au4EfCVIX8OSwm');
                     }
                 },
                 changeActive: function(event){
