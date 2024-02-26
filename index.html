@@ -45,9 +45,8 @@
                     </td>
                 </tr>
               </tbody>
-            
         </table>
-    
+        <div id="gifContainer"></div>
 </v-container>
     <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet">
 
@@ -55,7 +54,6 @@
     <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/vue-router@2.x/dist/vue-router.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
-
     <script>
         var router = new VueRouter({
             mode: 'history',
@@ -90,16 +88,38 @@
                 ]
             },
             methods: {
-                getCommunistEmoji: function(event) {
-                    if (event.active) {
-                        return '☭';
-                    } else {
-                        return event.emoji=this.getEmoji();
+                getGifs: function(event) {
+                    let gifUrl = this.checkDay(event)
+                    .then(response => response.json())
+                    .then(data => {
+                        let gifContainer = document.getElementById('gifContainer');
+                        let randomIndex = Math.floor(Math.random() * data.data.length);
+                        let gif = data.data[randomIndex].images.original.url;
+                        let img = document.createElement('img');
+                        img.src = gif;
+                        img.classList.add('animated-image');
+                        img.classList.add('container');
+                        img.classList.add('margin');
+                        img.width = 300;
+                        img.height = 300;
+                        gifContainer.appendChild(img);
+                        setTimeout(function() {
+                            img.classList.add('fade-out');
+                            gifContainer.removeChild(img);
+                        }, 5 * 60 * 1000);
+                    })
+                },
+                checkDay: function(event){
+                    let today = new Date();
+                    let day = today.getDay();
+                    if(day==5){
+                        return fetch('http://api.giphy.com/v1/gifs/search?q=Its+friday&api_key=Pu520AataQOyWkSY21Au4EfCVIX8OSwm');
+                    }else {
+                        return fetch('http://api.giphy.com/v1/gifs/search?q=good+morning&api_key=Pu520AataQOyWkSY21Au4EfCVIX8OSwm');
                     }
                 },
                 changeActive: function(event){
                     event.active=!event.active
-                    event.emoji=this.getCommunistEmoji(event);
                 },
                 showMenu: function (event) {
                     document.getElementById("menu-"+event.name).hidden=!document.getElementById("menu-"+event.name).hidden;
@@ -186,6 +206,9 @@
                             this.rowsCreated=arrayAux;
                         });
                 }
+                document.addEventListener('DOMContentLoaded', (event) => {
+                    this.getGifs();
+                });
             }
         });
         
@@ -195,5 +218,33 @@
         //var emojis = ['🐵','🐒','🙈','🙉','🙊'];
 
     </script>
+    <style>
+        @keyframes fadeOut {
+            100% {opacity: 1;}
+            0% {opacity: 0;}
+        }
+
+        @keyframes fadeIn {
+            0% {opacity: 0;}
+            100% {opacity: 1;}
+        }
+
+        .fade-out {
+            animation: fadeOut 5s ease-out;
+        }
+        .animated-image {
+            animation: fadeIn 3s ease-in-out;
+        }
+
+        .container {
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .margin {
+            margin-left: 80px;
+            margin-top: 25px;
+        }
+    </style>
 </body>
 </html>
